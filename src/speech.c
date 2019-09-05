@@ -174,6 +174,7 @@ do_say(dbref player, const char *message, NEW_PE_INFO *pe_info)
   char modmsg[BUFFER_LEN];
   char says[BUFFER_LEN];
   char *sp;
+  char *saytext;
   int mod = 0;
   loc = speech_loc(player);
   if (!GoodObject(loc))
@@ -200,7 +201,9 @@ do_say(dbref player, const char *message, NEW_PE_INFO *pe_info)
   /* notify everybody */
   notify_format(player, T("You say, \"%s\""), (mod ? modmsg : message));
   sp = says;
-  safe_format(says, &sp, T("%s says, \"%s\""), spname(player),
+  saytext = (atr_get(player, "SAYTEXT") == NULL ? "say" : atr_get(player, "SAYTEXT"));
+  safe_format(says, &sp, T("%s %ss, \"%s\""), spname(player),
+              saytext,
               (mod ? modmsg : message));
   *sp = '\0';
   notify_except(player, loc, player, says, NA_INTER_HEAR);
